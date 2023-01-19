@@ -1,0 +1,91 @@
+import os
+import math
+from re import I
+
+# parking information class
+class staffParkingInfo:
+    name="default"
+    desiredParkingNumber = 0
+    isReserved = False
+    
+#create a array of staffParkingInfo class
+p1 = staffParkingInfo() 
+p2 = staffParkingInfo() 
+p3 = staffParkingInfo() 
+p4 = staffParkingInfo() 
+p5 = staffParkingInfo() 
+p6 = staffParkingInfo() 
+p7 = staffParkingInfo() 
+p8 = staffParkingInfo() 
+p9 = staffParkingInfo() 
+p10 = staffParkingInfo() 
+p11 = staffParkingInfo() 
+p12 = staffParkingInfo() 
+p13 = staffParkingInfo() 
+p14 = staffParkingInfo() 
+parkingInfoArray = [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14]
+
+#record parking information method 
+def recordParkingInfo():
+          print("Please enter your desired parking number 1-14")
+          #check parking number validity
+          try:
+           # Convert it into integer
+           a = int(input())
+          except ValueError:
+            print("the parking value is invalid")
+            a = 0
+            recordParkingInfo()
+
+          #check whether out of range
+          if a>14 or a<1:
+            print("the parking number is out of range")
+            recordParkingInfo()
+
+          #check whether is reserved
+          else:
+            for b in parkingInfoArray: 
+              if a == b.desiredParkingNumber:
+                print("the parking number is reserved")
+                recordParkingInfo()
+
+            # the parking number is valid
+            # record the desired parking number and name
+            for c in parkingInfoArray:
+              if c.desiredParkingNumber == 0:
+                print("please enter your name")
+                d =input()
+                c.desiredParkingNumber = a
+                c.name = d
+                printParkingInfo()
+                break
+                      
+
+#restore all parkin information to default method
+def restoreParkingInfo():
+    for a in parkingInfoArray:
+        a.name = "default"
+        a.isReserved = False
+        a.desiredParkingNumber = 0
+
+#print parking information method      
+def printParkingInfo():
+    for a in parkingInfoArray:
+      if a.desiredParkingNumber != 0:
+        a.isReserved = True
+      print("name: " + a.name + "  parking number: " 
+              + str(a.desiredParkingNumber) + "  reserve status: " + str(a.isReserved))
+
+#edit the parking information method
+          
+
+#main program
+recordParkingInfo()
+recordParkingInfo()
+recordParkingInfo()
+recordParkingInfo()
+recordParkingInfo()
+recordParkingInfo()
+recordParkingInfo()
+recordParkingInfo()
+
