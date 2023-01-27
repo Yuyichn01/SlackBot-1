@@ -1,34 +1,50 @@
-from ast import Num
-from cgitb import text
-from email import message
-from multiprocessing import Event
 import os
-import time
-from typing import Text
 from pathlib import Path
-from xml.etree.ElementTree import tostring
+from pickle import NONE
 from dotenv import load_dotenv
 from slack_bolt import App
 from slack_sdk import WebClient
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-#variables to declare
-input = ["^number 1$",
-        "^number 2$",
-        "^number 3$",
-        "^number 4$",
-        "^number 5$",
-        "^number 6$",
-        "^number 7$",
-        "^number 8$",
-        "^number 9$",
-        "^number 10$",
-        "^number 11$",
-        "^number 12$",
-        "^number 13$",
-        "^number 14$"]
+# parking information class
+class staffParkingInfo:
+    name="empty"
+    parkingNumber = 0
 
-parkingInfoArray = [0]*14
+#create a array of staffParkingInfo class
+p1 = staffParkingInfo() 
+p2 = staffParkingInfo() 
+p3 = staffParkingInfo() 
+p4 = staffParkingInfo() 
+p5 = staffParkingInfo() 
+p6 = staffParkingInfo() 
+p7 = staffParkingInfo() 
+p8 = staffParkingInfo() 
+p9 = staffParkingInfo() 
+p10 = staffParkingInfo() 
+p11 = staffParkingInfo() 
+p12 = staffParkingInfo() 
+p13 = staffParkingInfo() 
+p14 = staffParkingInfo() 
+parkingInfoArray = [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14]
+
+p1.parkingNumber = 1
+p2.parkingNumber = 2
+p3.parkingNumber = 3
+p4.parkingNumber = 4
+p5.parkingNumber = 5
+p6.parkingNumber = 6
+p7.parkingNumber = 7
+p8.parkingNumber = 8
+p9.parkingNumber = 9
+p10.parkingNumber = 10
+p11.parkingNumber = 11
+p12.parkingNumber = 12
+p13.parkingNumber = 13
+p14.parkingNumber = 14
+
+for i in parkingInfoArray:
+    print(i.parkingNumber)
 
 #initialize bolt environment variables
 env_path = Path('.')/'.env'
@@ -43,39 +59,47 @@ def event1(event,say):
       user_id = event["user"]
       text = event["text"]
       say(f"Hello <@{user_id}>! I am slack bot")
-      say(f"for parking please enter 'parking reservation' ")
+      say(f"for parking please enter 'reserve parking'+'your name ")
 
-#listen to keyword "parking" and trigger events
-@app.message("^parking reservation$")
-def message1(say):
-    # welcome message
-    say(f"Please enter 'number'+ 'your desired parking number (1 to 14)', Eg:number 14, number 01")
-    
-#listen to keyword "parking" and trigger events
-for i in input:
-  @app.message(i)
-  def message1(message, say):
+@app.message("^help$")
+def message1(message,say):
     text = message["text"]
-    reserved = False
-    if parkingInfoArray[int(text[7:9])-1]!= 0:
-        say("number " + text[7:9]+ " is reserved, please try a different parking number")
+    say(f"Hello! What can I help you?")
+
+
+    
+#reserve parking method
+@app.message("reserve parking")
+def message1(message,say):
+    num = 0
+    text = message["text"]
+    noAvailableSpots = True
+    for i in parkingInfoArray:
+      if i.name == "empty":
+        num = str(i.parkingNumber)
+        i.name = text[16:]
+        noAvailableSpots = False
+        break
+    if noAvailableSpots == True:
+        say(f"Sorry, no parking spot available")
     else:
-        parkingInfoArray[int(text[7:9])-1]= int(text[7:9])
-        say(text +" has been reserved successfully!")
+        say(f"you have successfully reserved badge number "+ num + ", please collect your badge at IT room")
 
 #print parking information method   
 @app.message("^parking information$")   
 def outputParkingInfo(say):
-    num=0
-    for i in input:
-        if parkingInfoArray[num] == 0:
-          say(input[num]+" is available")
+    text = "Number:         Status:\n"
+    for j in parkingInfoArray:
+        if j.name == "empty":
+          text += str(j.parkingNumber)+"                      available\n"
         else:
-          say(input[num]+" is reserved")
-        num +=1
-
+            if j.name =="":
+                text +=str(j.parkingNumber) + "                     reserved\n"
+            else:
+                text +=str(j.parkingNumber) + "                     reserved by "+ j.name + "\n"
+    say(text)
+        
 # Start app
 if __name__ == "__main__":
     SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
- 
- 
+
